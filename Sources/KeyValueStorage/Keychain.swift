@@ -13,7 +13,7 @@ public protocol KeychainProtocol: AnyObject {
         _ data: Data,
         forAccount account: String,
         accessible: KeychainAccessible
-    )
+    ) throws
     func getData(
         forAccount account: String
     ) throws -> Data?
@@ -27,8 +27,8 @@ extension KeychainProtocol {
         _ data: Data,
         forAccount account: String,
         accessible: KeychainAccessible = .unlocked
-    ) {
-        setData(
+    ) throws {
+        try setData(
             data,
             forAccount: account,
             accessible: accessible
