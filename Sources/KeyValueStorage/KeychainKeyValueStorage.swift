@@ -1,10 +1,10 @@
 import Foundation
 
-final class KeychainKeyValueStorage: KeyValueStorageProtocol {
+public final class KeychainKeyValueStorage: KeyValueStorageProtocol {
     private let keychain: KeychainProtocol
     private let accessible: KeychainAccessible
 
-    init(
+    public init(
         keychain: KeychainProtocol,
         accessible: KeychainAccessible = .unlocked
     ) {
@@ -12,7 +12,7 @@ final class KeychainKeyValueStorage: KeyValueStorageProtocol {
         self.accessible = accessible
     }
 
-    func setValue<Value: Encodable>(
+    public func setValue<Value: Encodable>(
         _ value: Value,
         forKey key: String
     ) throws {
@@ -23,7 +23,7 @@ final class KeychainKeyValueStorage: KeyValueStorageProtocol {
         )
     }
     
-    func value<Value: Decodable>(
+    public func value<Value: Decodable>(
         forKey key: String,
         ofType type: Value.Type
     ) throws -> Value? {
@@ -34,7 +34,7 @@ final class KeychainKeyValueStorage: KeyValueStorageProtocol {
         }
     }
 
-    func removeValue(
+    public func removeValue(
         forKey key: String
     ) throws {
         try keychain.removeData(

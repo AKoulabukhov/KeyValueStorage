@@ -1,13 +1,13 @@
 import Foundation
 
-final class UserDefaultsKeyValueStorage: KeyValueStorageProtocol {
+public final class UserDefaultsKeyValueStorage: KeyValueStorageProtocol {
     private let userDefaults: UserDefaults
 
-    init(userDefaults: UserDefaults) {
+    public init(userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
     }
 
-    func setValue<Value: Encodable>(
+    public func setValue<Value: Encodable>(
         _ value: Value,
         forKey key: String
     ) throws {
@@ -17,7 +17,7 @@ final class UserDefaultsKeyValueStorage: KeyValueStorageProtocol {
         )
     }
     
-    func value<Value: Decodable>(
+    public func value<Value: Decodable>(
         forKey key: String,
         ofType type: Value.Type
     ) throws -> Value? {
@@ -28,7 +28,7 @@ final class UserDefaultsKeyValueStorage: KeyValueStorageProtocol {
         }
     }
 
-    func removeValue(
+    public func removeValue(
         forKey key: String
     ) throws {
         userDefaults.removeObject(
