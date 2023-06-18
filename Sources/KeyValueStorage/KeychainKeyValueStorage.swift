@@ -33,4 +33,12 @@ final class KeychainKeyValueStorage: KeyValueStorageProtocol {
             try Value.decodeData($0)
         }
     }
+
+    func removeValue(
+        forKey key: String
+    ) throws {
+        try keychain.removeData(
+            forAccount: key
+        )
+    }
 }

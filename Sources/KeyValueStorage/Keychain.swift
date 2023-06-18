@@ -17,6 +17,9 @@ public protocol KeychainProtocol: AnyObject {
     func getData(
         forAccount account: String
     ) throws -> Data?
+    func removeData(
+        forAccount account: String
+    ) throws
 }
 
 extension KeychainProtocol {
@@ -107,6 +110,26 @@ public final class Keychain: KeychainProtocol {
         }
         
         return data
+    }
+
+    public func removeData(
+        forAccount account: String
+    ) throws {
+        let query: [CFString: Any] = [
+            kSecAttrService: service,
+            kSecAttrAccount: account,
+            kSecClass: kSecClassGenericPassword,
+        ]
+
+        let status = SecItemDelete(query as CFDictionary)
+
+        if status == errSecItemNotFound {
+            return
+        }
+
+        if status != errSecSuccess {
+            throw KeychainError(status: status)
+        }
     }
 }
 

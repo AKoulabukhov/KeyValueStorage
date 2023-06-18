@@ -28,4 +28,11 @@ final class UserDefaultsKeyValueStorage: KeyValueStorageProtocol {
         }
     }
 
+    func removeValue(
+        forKey key: String
+    ) throws {
+        userDefaults.removeObject(
+            forKey: key
+        )
+    }
 }

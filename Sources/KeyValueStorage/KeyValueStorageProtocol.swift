@@ -9,6 +9,27 @@ public protocol KeyValueStorageProtocol: AnyObject {
         forKey key: String,
         ofType type: Value.Type
     ) throws -> Value?
+    func removeValue(
+        forKey key: String
+    ) throws
+}
+
+extension KeyValueStorageProtocol {
+    public func setValue<Value: Encodable>(
+        _ value: Value?,
+        forKey key: String
+    ) throws {
+        if let value {
+            try setValue(
+                value,
+                forKey: key
+            )
+        } else {
+            try removeValue(
+                forKey: key
+            )
+        }
+    }
 }
 
 private let encoder = JSONEncoder()
