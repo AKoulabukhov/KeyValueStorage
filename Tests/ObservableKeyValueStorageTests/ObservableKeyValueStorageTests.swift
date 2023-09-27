@@ -27,7 +27,9 @@ final class ObservableKeyValueStorageTests: XCTestCase {
         try storage.removeValue(forKey: "int")
         try storage.setValue(2, forKey: "int")
         try storage.setValue(3, forKey: "int")
+        try subject.setValue(4)
+        try subject.setValue(nil)
 
-        XCTAssertEqual(values, [1, nil, 2, 3])
+        XCTAssertEqual(values, [1, nil, 2, 3, 4, nil])
     }
 }

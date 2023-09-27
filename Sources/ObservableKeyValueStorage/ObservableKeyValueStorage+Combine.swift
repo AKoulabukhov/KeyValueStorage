@@ -3,7 +3,7 @@ import Combine
 
 extension ObservableKeyValueStorageProtocol {
     @available(iOS 13, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
-    public func makeSubject<Value: Decodable>(
+    public func makeSubject<Value: Codable>(
         forKey key: String,
         ofType type: Value.Type
     ) -> KeyValueStorageSubject<Value> {
@@ -15,7 +15,7 @@ extension ObservableKeyValueStorageProtocol {
 }
 
 @available(iOS 13, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
-public struct KeyValueStorageSubject<Value: Decodable>: Publisher {
+public struct KeyValueStorageSubject<Value: Codable>: Publisher {
     public typealias Output = Value?
     public typealias Failure = Error
 
@@ -59,8 +59,21 @@ public struct KeyValueStorageSubject<Value: Decodable>: Publisher {
     ) where S.Failure == Failure, S.Input == Output {
         subject.receive(subscriber: subscriber)
     }
+
+    public func setValue(_ newValue: Value?) throws {
+        if let newValue {
+            try storage.setValue(
+                newValue,
+                forKey: key
+            )
+        } else {
+            try storage.removeValue(
+                forKey: key
+            )
+        }
+    }
     
-    public var value: Output? {
+    public var value: Value? {
         subject.value
     }
 }
