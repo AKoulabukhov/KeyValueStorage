@@ -77,3 +77,34 @@ public struct KeyValueStorageSubject<Value: Codable>: Publisher {
         subject.value
     }
 }
+
+/// A wrapper of KeyValueStorageSubject.
+/// The purpose of this type is to remove the possibility to send new values on the underlying subject
+@available(iOS 13, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
+public struct KeyValueStoragePublisher<Value: Codable>: Publisher {
+    public typealias Output = Value?
+    public typealias Failure = Error
+    
+    private let subject: KeyValueStorageSubject<Value>
+    
+    init(_ subject: KeyValueStorageSubject<Value>) {
+        self.subject = subject
+    }
+    
+    public func receive<S: Subscriber>(
+        subscriber: S
+    ) where S.Failure == Failure, S.Input == Output {
+        subject.receive(subscriber: subscriber)
+    }
+    
+    public var value: Value? {
+        subject.value
+    }
+}
+
+@available(iOS 13, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
+extension KeyValueStorageSubject {
+    public func asPublisher() -> KeyValueStoragePublisher<Value> {
+        .init(self)
+    }
+}

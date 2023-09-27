@@ -6,7 +6,7 @@ import Combine
 @available(iOS 13, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
 final class ObservableKeyValueStorageTests: XCTestCase {
 
-    private var cancellable: AnyCancellable?
+    private var cancellables = Set<AnyCancellable>()
     
     func testObservableKeyValueStorage() throws {
         let storage = UserDefaultsKeyValueStorage(userDefaults: .standard).observable()
@@ -16,13 +16,18 @@ final class ObservableKeyValueStorageTests: XCTestCase {
             forKey: "int",
             ofType: Int.self
         )
-
-        var values = [Int?]()
-
-        cancellable = subject.sink(
+        var subjectValues = [Int?]()
+        subject.sink(
             receiveCompletion: { _ in },
-            receiveValue: { values.append($0) }
-        )
+            receiveValue: { subjectValues.append($0) }
+        ).store(in: &cancellables)
+
+        let publisher = subject.asPublisher()
+        var publisherValues = [Int?]()
+        publisher.sink(
+            receiveCompletion: { _ in },
+            receiveValue: { publisherValues.append($0) }
+        ).store(in: &cancellables)
 
         try storage.removeValue(forKey: "int")
         try storage.setValue(2, forKey: "int")
@@ -30,6 +35,7 @@ final class ObservableKeyValueStorageTests: XCTestCase {
         try subject.setValue(4)
         try subject.setValue(nil)
 
-        XCTAssertEqual(values, [1, nil, 2, 3, 4, nil])
+        XCTAssertEqual(subjectValues, [1, nil, 2, 3, 4, nil])
+        XCTAssertEqual(publisherValues, subjectValues)
     }
 }
