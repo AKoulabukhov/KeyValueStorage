@@ -6,18 +6,29 @@ import PackageDescription
 let package = Package(
     name: "KeyValueStorage",
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "KeyValueStorage",
-            targets: ["KeyValueStorage"]),
+            targets: [
+                "KeyValueStorage",
+                "ObservableKeyValueStorage"
+            ]
+        ),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "KeyValueStorage"),
+            name: "KeyValueStorage"
+        ),
+        .target(
+            name: "ObservableKeyValueStorage",
+            dependencies: ["KeyValueStorage"]
+        ),
         .testTarget(
             name: "KeyValueStorageTests",
-            dependencies: ["KeyValueStorage"]),
+            dependencies: ["KeyValueStorage"]
+        ),
+        .testTarget(
+            name: "ObservableKeyValueStorageTests",
+            dependencies: ["ObservableKeyValueStorage"]
+        ),
     ]
 )
